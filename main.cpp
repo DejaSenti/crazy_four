@@ -17,6 +17,12 @@ enum Sides
     NUM_SIDES
 };
 
+enum Status
+{
+    SUCCESS,
+    FAILURE
+};
+
 const std::string COLOUR_VALUES[NUM_SIDES] = 
 {
     "Red",
@@ -25,7 +31,7 @@ const std::string COLOUR_VALUES[NUM_SIDES] =
     "Yellow"
 };
 
-inline Sides& operator++(Sides& side, int) 
+static inline Sides& operator++(Sides& side, int) 
 {
     const int i = static_cast<int>(side) + 1;
     side = static_cast<Sides>((i) % static_cast<int>(NUM_SIDES));
@@ -166,12 +172,6 @@ static bool is_colour_placement_correct(std::vector<std::array<Sides, NUM_SIDES>
     return true;
 }
 
-enum Status
-{
-    SUCCESS,
-    FAILURE
-};
-
 static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 {
     if (!is_colour_placement_correct(cubes))
@@ -205,7 +205,7 @@ static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
     return FAILURE;
 }
 
-void print_cube_row(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
+static void print_cube_row(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 {
     const int MAX_WIDTH = 10;
     const char SEPARATOR = '|';

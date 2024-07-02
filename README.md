@@ -16,17 +16,19 @@ If the next cube placement is successful, the current cube placement is also suc
 The Pseudocode:
 ==============
 bool place_next_cube(cubes_list, total_num_cubes, current_cube_index)
-    for cube orientation
-        place cube
-        if colour check is good
-            if cube is last
-                return success
-            else
-                place next cube
-                if placement successful
-                    return success
-                else
-                    remove next cube
+    if colour check fails
+        return failure
+
+    if cube is last
+        return success
+
+    for each cube orientation
+        place current cube
+        place next cube
+        if placement successful
+            return success
+        else
+            remove next cube
         
     return failure
 
