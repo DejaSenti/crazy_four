@@ -8,20 +8,13 @@
 
 using namespace std;
 
-enum Sides
-{
-    RED = 0,
-    GREEN,
-    BLUE,
-    YELLOW,
-    NUM_SIDES
-};
-
 enum Status
 {
     SUCCESS,
     FAILURE
 };
+
+const int NUM_SIDES = 4;
 
 const std::string COLOUR_VALUES[NUM_SIDES] = 
 {
@@ -31,14 +24,7 @@ const std::string COLOUR_VALUES[NUM_SIDES] =
     "Yellow"
 };
 
-static inline Sides& operator++(Sides& side, int) 
-{
-    const int i = static_cast<int>(side) + 1;
-    side = static_cast<Sides>((i) % static_cast<int>(NUM_SIDES));
-    return side;
-}
-
-static void rotate_cube(std::array<Sides, NUM_SIDES>& cube)
+static void rotate_cube(std::array<int, NUM_SIDES>& cube)
 {
     for (int i = cube.size() - 1; i > 0; i--)
     {
@@ -46,7 +32,7 @@ static void rotate_cube(std::array<Sides, NUM_SIDES>& cube)
     }
 }
 
-static void heap_algorithm(int num, std::array<Sides, NUM_SIDES> array, std::vector<std::array<Sides, NUM_SIDES>>& result)
+static void heap_algorithm(int num, std::array<int, NUM_SIDES> array, std::vector<std::array<int, NUM_SIDES>>& result)
 {
     if (num == 1)
     {
@@ -69,19 +55,19 @@ static void heap_algorithm(int num, std::array<Sides, NUM_SIDES> array, std::vec
     }
 }
 
-static std::vector<array<Sides, NUM_SIDES>> generate_all_permutations(void)
+static std::vector<array<int, NUM_SIDES>> generate_all_permutations(void)
 {
-    std::vector<array<Sides, NUM_SIDES>> result;
+    std::vector<array<int, NUM_SIDES>> result;
 
-    std::array<Sides, NUM_SIDES> initial_permutation;
-    std::generate(initial_permutation.begin(), initial_permutation.end(), [n = static_cast<Sides>(0)] () mutable { return n++; });
+    std::array<int, NUM_SIDES> initial_permutation;
+    std::generate(initial_permutation.begin(), initial_permutation.end(), [n = 0] () mutable { return n++; });
 
     heap_algorithm(initial_permutation.size(), initial_permutation, result);
 
     return result;
 }
 
-static bool is_rotation(std::array<Sides, NUM_SIDES> cand1, std::array<Sides, NUM_SIDES>& cand2)
+static bool is_rotation(std::array<int, NUM_SIDES> cand1, std::array<int, NUM_SIDES>& cand2)
 {
     if (cand1.size() != cand2.size())
     {
@@ -99,7 +85,7 @@ static bool is_rotation(std::array<Sides, NUM_SIDES> cand1, std::array<Sides, NU
     return false;
 }
 
-static bool is_existing_permutation(std::array<Sides, NUM_SIDES>& candidate, std::vector<std::array<Sides, NUM_SIDES>>& permutations)
+static bool is_existing_permutation(std::array<int, NUM_SIDES>& candidate, std::vector<std::array<int, NUM_SIDES>>& permutations)
 {
     for (auto& perm : permutations)
     {
@@ -112,11 +98,11 @@ static bool is_existing_permutation(std::array<Sides, NUM_SIDES>& candidate, std
     return false;
 }
 
-static std::vector<std::array<Sides, NUM_SIDES>> get_cube_permutations(void)
+static std::vector<std::array<int, NUM_SIDES>> get_cube_permutations(void)
 {
-    std::vector<std::array<Sides, NUM_SIDES>> result;
+    std::vector<std::array<int, NUM_SIDES>> result;
 
-    std::vector<std::array<Sides, NUM_SIDES>> all_perms = generate_all_permutations();
+    std::vector<std::array<int, NUM_SIDES>> all_perms = generate_all_permutations();
 
     for (auto& perm : all_perms)
     {
@@ -131,9 +117,9 @@ static std::vector<std::array<Sides, NUM_SIDES>> get_cube_permutations(void)
     return result;
 }
 
-static std::array<Sides, NUM_SIDES> get_next_permutation(void)
+static std::array<int, NUM_SIDES> get_next_permutation(void)
 {
-    static std::vector<std::array<Sides, NUM_SIDES>> all_permutations = get_cube_permutations();
+    static std::vector<std::array<int, NUM_SIDES>> all_permutations = get_cube_permutations();
     static auto iter = all_permutations.begin();
 
     if (iter != all_permutations.end())
@@ -149,7 +135,7 @@ static std::array<Sides, NUM_SIDES> get_next_permutation(void)
     }
 }
 
-static bool is_colour_placement_correct(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
+static bool is_colour_placement_correct(std::vector<std::array<int, NUM_SIDES>>& cubes)
 {
     for (int i = 0; i < NUM_SIDES; i++)
     {
@@ -172,7 +158,7 @@ static bool is_colour_placement_correct(std::vector<std::array<Sides, NUM_SIDES>
     return true;
 }
 
-static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
+static Status place_next_cube(std::vector<std::array<int, NUM_SIDES>>& cubes)
 {
     if (!is_colour_placement_correct(cubes))
     {
@@ -205,7 +191,7 @@ static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
     return FAILURE;
 }
 
-static void print_cube_row(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
+static void print_cube_row(std::vector<std::array<int, NUM_SIDES>>& cubes)
 {
     const int MAX_WIDTH = 10;
     const char SEPARATOR = '|';
@@ -256,7 +242,7 @@ static void print_cube_row(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 
 int main(void)
 {
-    std::vector<std::array<Sides, NUM_SIDES>> cubes;
+    std::vector<std::array<int, NUM_SIDES>> cubes;
 
     if (place_next_cube(cubes) != SUCCESS)
     {
