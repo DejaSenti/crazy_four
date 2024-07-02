@@ -4,6 +4,7 @@
 #include <numeric>
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
@@ -206,17 +207,46 @@ static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 
 void print_cube_row(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 {
+    const int MAX_WIDTH = 10;
+    const char SEPARATOR = '|';
+
+    for (int i = 0; i < NUM_SIDES; i++)
+    {
+        std::string label = "Side " + std::to_string(i + 1);
+        std::cout << std::left << std::setw(MAX_WIDTH) << label;
+
+        if (i < NUM_SIDES - 1) [[likely]]
+        {
+            std::cout << SEPARATOR;
+        }
+    }
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < NUM_SIDES; i++)
+    {
+        std::cout << std::right << std::setw(MAX_WIDTH + 1) << std::setfill('=');
+
+        if (i < NUM_SIDES - 1) [[likely]]
+        {
+            std::cout << SEPARATOR;
+        }
+        else
+        {
+            std::cout << '\n';
+        }
+    }
 
     for (auto& cube : cubes)
     {
         for (int i = 0; i < cube.size(); i++)
         {
-            std::cout << std::right << std::setw(10) << std::setfill(' ');
+            std::cout << std::left << std::setw(MAX_WIDTH) << std::setfill(' ');
             std::cout << COLOUR_VALUES[static_cast<int>(cube[i])];
 
             if (i < cube.size() - 1) [[likely]]
             {
-                std::cout << " | ";
+                std::cout << SEPARATOR;
             }
         }
 
