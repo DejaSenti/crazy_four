@@ -60,7 +60,7 @@ static std::vector<array<int, NUM_SIDES>> generate_all_permutations(void)
     std::vector<array<int, NUM_SIDES>> result;
 
     std::array<int, NUM_SIDES> initial_permutation;
-    std::generate(initial_permutation.begin(), initial_permutation.end(), [n = 0] () mutable { return n++; });
+    std::iota(initial_permutation.begin(), initial_permutation.end(), 0);
 
     heap_algorithm(initial_permutation.size(), initial_permutation, result);
 
