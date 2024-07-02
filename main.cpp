@@ -24,6 +24,13 @@ const std::string COLOUR_VALUES[NUM_SIDES] =
     "Yellow"
 };
 
+inline Sides& operator++(Sides& side, int) 
+{
+    const int i = static_cast<int>(side) + 1;
+    side = static_cast<Sides>((i) % static_cast<int>(NUM_SIDES));
+    return side;
+}
+
 static void rotate_cube(std::array<Sides, NUM_SIDES>& cube)
 {
     for (int i = cube.size() - 1; i > 0; i--)
@@ -60,9 +67,11 @@ static std::vector<array<Sides, NUM_SIDES>> generate_all_permutations(void)
     std::vector<array<Sides, NUM_SIDES>> result;
 
     std::array<Sides, NUM_SIDES> initial_permutation;
-    std::iota(initial_permutation.begin(), initial_permutation.end(), 0);
+    std::generate(initial_permutation.begin(), initial_permutation.end(), [n = static_cast<Sides>(0)] () mutable { return n++; });
 
     heap_algorithm(initial_permutation.size(), initial_permutation, result);
+
+    return result;
 }
 
 static bool is_rotation(std::array<Sides, NUM_SIDES> cand1, std::array<Sides, NUM_SIDES>& cand2)
@@ -111,6 +120,8 @@ static std::vector<std::array<Sides, NUM_SIDES>> get_cube_permutations(void)
 
         result.push_back(perm);
     }
+
+    return result;
 }
 
 static std::array<Sides, NUM_SIDES> get_next_permutation(void)
@@ -139,7 +150,7 @@ static bool is_colour_placement_correct(std::vector<std::array<Sides, NUM_SIDES>
 
         for (auto& cube : cubes)
         {
-            colour_counters[cube[i]]++;
+            colour_counters[static_cast<int>(cube[i])]++;
         }
 
         for (auto& counter : colour_counters)
@@ -162,29 +173,29 @@ enum Status
 
 static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 {
+    if (!is_colour_placement_correct(cubes))
+    {
+        return FAILURE;
+    }
+
+    if (cubes.size() == NUM_SIDES)
+    {
+        return SUCCESS;
+    }
+
     auto current_cube = get_next_permutation();
 
     for (int i = 0; i < NUM_SIDES; i++)
     {
         cubes.push_back(current_cube);
 
-        if (is_colour_placement_correct(cubes))
+        if (place_next_cube(cubes) == SUCCESS)
         {
-            if (cubes.size() == NUM_SIDES)
-            {
-                return SUCCESS;
-            }
-            else
-            {
-                if (place_next_cube(cubes) == SUCCESS)
-                {
-                    return SUCCESS;
-                }
-                else
-                {
-                    cubes.pop_back();
-                }
-            }
+            return SUCCESS;
+        }
+        else
+        {
+            cubes.pop_back();
         }
 
         rotate_cube(current_cube);
@@ -195,13 +206,13 @@ static Status place_next_cube(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 
 void print_cube_row(std::vector<std::array<Sides, NUM_SIDES>>& cubes)
 {
-    std::cout << std::right << std::setw(10) << std::setfill(' ');
 
     for (auto& cube : cubes)
     {
         for (int i = 0; i < cube.size(); i++)
         {
-            std::cout << COLOUR_VALUES[cube[i]];
+            std::cout << std::right << std::setw(10) << std::setfill(' ');
+            std::cout << COLOUR_VALUES[static_cast<int>(cube[i])];
 
             if (i < cube.size() - 1) [[likely]]
             {
@@ -220,7 +231,6 @@ int main(void)
     if (place_next_cube(cubes) != SUCCESS)
     {
         std::cout << "Failed!" << std::endl;
-        return -1;
     }
 
     print_cube_row(cubes);
