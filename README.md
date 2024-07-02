@@ -15,61 +15,64 @@ If the next cube placement is successful, the current cube placement is also suc
 
 The Pseudocode:
 ==============
-bool place_next_cube(cubes_list, total_num_cubes, current_cube_index)
-    if colour check fails
-        return failure
 
-    if cube is last
-        return success
+    bool place_next_cube(cubes_list, total_num_cubes, current_cube_index)
+        if colour check fails
+            return failure
 
-    for each cube orientation
-        place current cube
-        place next cube
-        if placement successful
+        if cube is last
             return success
-        else
-            remove next cube
-        
-    return failure
+
+        for each cube orientation
+            place current cube
+            place next cube
+            if placement successful
+                return success
+            else
+                remove next cube
+            
+        return failure
 
 Generating Cubes:
 ================
 There are N possible values on each side of the cube, therefore there are N! possible options of value orders.
 Each option which is just a rotation of another option doesn't count, and there are N - 1 rotations for each permutation, so a total of N * (N - 1) options out of N! that don't count, so a total of N! - N * (N - 1) options.
 
-for permutation
-    if permutation is rotation of any previous permutation
-        continue
-    else
-        add to existing permutations
+    for permutation
+        if permutation is rotation of any previous permutation
+            continue
+        else
+            add to existing permutations
 
 Generating Permutations:
 =======================
 Heap's algorithm:
 
-generate(num, array, result)
-    if num == 1
-        result.append(array)
-        return
-
-    generate(k - 1, array, result)
-
-    for i = 0; i < k - 1; i++
-        if k is even
-            swap array[i], array[k - 1]
-        else
-            swap array[0], array[k - 1]
+    generate(num, array, result)
+        if num == 1
+            result.append(array)
+            return
 
         generate(k - 1, array, result)
 
-generate_all_permutations()
-    for i = 0; i < max; i++
-        array.append(i)
+        for (i = 0; i < k - 1; i++)
+            if k is even
+                swap array[i], array[k - 1]
+            else
+                swap array[0], array[k - 1]
 
-    generate(max, array, result)
+            generate(k - 1, array, result)
+
+
+    generate_all_permutations()
+        for (i = 0; i < max; i++)
+            array.append(i)
+
+        generate(max, array, result)
 
 Rotation:
 ========
-rotate(array)
-    for i = length(array) - 1; i > 0; i--
-        swap array[i], array[i - 1]
+
+    rotate(array)
+        for (i = length(array) - 1; i > 0; i--)
+            swap array[i], array[i - 1]
